@@ -1,8 +1,10 @@
 #include "mytcp.h"
+#include "ui_mytcp_config.h"
 
-myTCP::myTCP()
+myTCP::myTCP(QWidget *parent):
+    ui_cfg(new Ui::mytcp_config)
 {
-    ui_cfg = NULL;
+    ui_cfg->setupUi(parent);
 }
 myTCP::~myTCP()
 {

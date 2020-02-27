@@ -16,7 +16,7 @@ class mySerial :public QObject
     Q_OBJECT
 
 public:
-    mySerial();
+    mySerial(QWidget *parent = 0);
     ~mySerial();
 
 private:

@@ -13,7 +13,7 @@ class myTCP:public QObject
 {
     Q_OBJECT
 public:
-    myTCP();
+    myTCP(QWidget *parent = 0);
      ~myTCP();
 
 private:
