@@ -85,11 +85,11 @@ void MainWindow::on_portchoose_currentIndexChanged(int index)
     if(portopen_en==false)
     {
         qDebug()<<index;
-//        delete myserial;
+        delete myserial;
         delete mytcp;
 
-//        if(index==0) {mytcp    = new myTCP(ui->portsetweight); myserial=NULL;}
-//        else{   myserial    = new mySerial(ui->portsetweight); mytcp=NULL;}
+        if(index==0) {mytcp    = new myTCP(ui->portsetweight); myserial=NULL;}
+        else{   myserial    = new mySerial(ui->portsetweight,ui->portchoose->currentText()); mytcp=NULL;}
 
     }
 }

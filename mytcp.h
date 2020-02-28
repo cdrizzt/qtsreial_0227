@@ -9,7 +9,7 @@ namespace Ui {
 class mytcp_config;
 }
 
-class myTCP:public QObject
+class myTCP:public QWidget
 {
     Q_OBJECT
 public:
