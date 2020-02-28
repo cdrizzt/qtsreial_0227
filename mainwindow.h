@@ -24,6 +24,7 @@ public:
 
     void Timer0_Init(uint16_t time);       //中断时间 对象 槽函数
 
+    bool portopen_en;
 private slots:          //槽
     void time0_task(void);
     void on_portchoose_currentIndexChanged(int index);

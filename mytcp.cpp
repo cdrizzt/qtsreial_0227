@@ -5,6 +5,7 @@ myTCP::myTCP(QWidget *parent):
     ui_cfg(new Ui::mytcp_config)
 {
     ui_cfg->setupUi(parent);
+
 }
 myTCP::~myTCP()
 {

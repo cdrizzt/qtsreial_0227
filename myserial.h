@@ -19,6 +19,7 @@ public:
     mySerial(QWidget *parent = 0);
     ~mySerial();
 
+
 private:
     Ui::myserial_config *ui_cfg;
     Ui::myserial_set *ui_set;
