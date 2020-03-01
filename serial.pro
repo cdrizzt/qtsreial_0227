@@ -9,7 +9,7 @@ QT       += serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = serial
+TARGET = serial_
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -27,11 +27,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     myserial.cpp \
-    mytcp.cpp
+    mytcp.cpp \
+    bytechange.cpp
 
 HEADERS  += mainwindow.h \
     myserial.h \
-    mytcp.h
+    mytcp.h \
+    bytechange.h
 
 FORMS    += mainwindow.ui \
     myserial_config.ui \
