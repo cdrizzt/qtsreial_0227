@@ -123,13 +123,72 @@ void mySerial::on_serialswitch_clicked()
         if(SerialPort->open(QIODevice::ReadWrite))
         {
             qDebug()<<"open";
-            SerialPort->setBaudRate(QSerialPort::Baud115200);   //波特率
-            SerialPort->setDataBits(QSerialPort::Data8);        //数据位
-            SerialPort->setParity(QSerialPort::NoParity);       //校验位
-            SerialPort->setStopBits(QSerialPort::OneStop);      //停止位
-            SerialPort->setFlowControl(QSerialPort::NoFlowControl);//控制流
-            //关闭菜单使能
+            //波特率
+            {
+            if(port_set.value(1)=="1200")
+                SerialPort->setBaudRate(QSerialPort::Baud1200);
+            else if(port_set.value(1)=="2400")
+                SerialPort->setBaudRate(QSerialPort::Baud2400);
+            else if(port_set.value(1)=="4800")
+                SerialPort->setBaudRate(QSerialPort::Baud4800);
+            else if(port_set.value(1)=="9600")
+                SerialPort->setBaudRate(QSerialPort::Baud9600);
+            else if(port_set.value(1)=="19200")
+                SerialPort->setBaudRate(QSerialPort::Baud19200);
+            else if(port_set.value(1)=="38400")
+                SerialPort->setBaudRate(QSerialPort::Baud38400);
+            else if(port_set.value(1)=="57600")
+                SerialPort->setBaudRate(QSerialPort::Baud57600);
+            else if(port_set.value(1)=="115200")
+                SerialPort->setBaudRate(QSerialPort::Baud115200);
+            }
+            //数据位
+            {
+                if(port_set.value(2)=="5")
+                    SerialPort->setDataBits(QSerialPort::Data5);
+                else if(port_set.value(2)=="6")
+                    SerialPort->setDataBits(QSerialPort::Data6);
+                else if(port_set.value(2)=="7")
+                    SerialPort->setDataBits(QSerialPort::Data7);
+                else if(port_set.value(2)=="8")
+                    SerialPort->setDataBits(QSerialPort::Data8);
+            }
+            //停止位
+            {
+                if(port_set.value(3)=="1")
+                    SerialPort->setStopBits(QSerialPort::OneStop);
+                else if(port_set.value(3)=="1.5")
+                    SerialPort->setStopBits(QSerialPort::OneAndHalfStop);
+                else if(port_set.value(3)=="2")
+                    SerialPort->setStopBits(QSerialPort::TwoStop);
+            }
+            //校验位
+            {
+                if(port_set.value(4)=="None")
+                    SerialPort->setParity(QSerialPort::NoParity);
+                else if(port_set.value(4)=="odd")
+                    SerialPort->setParity(QSerialPort::OddParity);
+                else if(port_set.value(4)=="even")
+                    SerialPort->setParity(QSerialPort::EvenParity);
+                else if(port_set.value(4)=="space")
+                    SerialPort->setParity(QSerialPort::SpaceParity);
+                else if(port_set.value(4)=="mark")
+                    SerialPort->setParity(QSerialPort::MarkParity);
+            }
+            //控制流
+            {
+                if(port_set.value(5)=="None")
+                     SerialPort->setFlowControl(QSerialPort::NoFlowControl);
+                else if(port_set.value(5)=="Hardware")
+                     SerialPort->setFlowControl(QSerialPort::HardwareControl);
+                else if(port_set.value(5)=="Software")
+                     SerialPort->setFlowControl(QSerialPort::SoftwareControl);
+            }
 
+
+            //关闭菜单使能
+            ui_cfg->baud_box->setEnabled(false);
+            ui_cfg->port_setin->setEnabled(false);
             //链接槽函数
 
             connect(SerialPort,&QSerialPort::readyRead,this,&mySerial::read_data);
@@ -145,6 +204,8 @@ void mySerial::on_serialswitch_clicked()
     else
     {
         qDebug()<<"close";
+        ui_cfg->baud_box->setEnabled(true);
+        ui_cfg->port_setin->setEnabled(true);
         delete SerialPort;  SerialPort = NULL;
         ui_cfg->serialswitch->setText("打开串口");
         open_flag=false;

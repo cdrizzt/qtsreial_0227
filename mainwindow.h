@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QFont>
+#include <QLabel>
 
 #include "myserial.h"
 #include "mytcp.h"
@@ -40,7 +41,7 @@ public:
 
     void Timer0_Init(uint16_t time);       //中断时间 对象 槽函数
     void edit_show(QByteArray byte_, uint8_t flag);
-
+    void MesStatusBar();
 private slots:          //槽
     void time0_task(void);
     void changeportopen_en(bool flag);
@@ -72,9 +73,14 @@ private slots:          //槽
 
     void on_openfilebtn_clicked();
 
+    void on_cleansendbtn_clicked();
+
+
 private:
     bool portopen_en;
 
+    QByteArray  senddata_num;
+    QByteArray  readdata_num;
     SendStatus sendsta;
     ReciveStatus receivesta;
 
@@ -83,6 +89,8 @@ private:
     myTCP    *mytcp;
     QTimer   *myTime_0;
 
+    QLabel *label_send;
+    QLabel *label_rec;
     QFont *send_font;
     QFont *receive_font;
 

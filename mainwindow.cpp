@@ -12,10 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
     mytcp    = new myTCP(ui->portsetweight);
     memset(&sendsta,false,sizeof(sendsta));
     memset(&receivesta,false,sizeof(receivesta));
+
     ui->sendtimeset->setValidator(new QIntValidator(1,50000,this));
     portopen_en=false;
     Timer0_Init(1000);
-
+    MesStatusBar();
     connect(ui->send_edit,&QTextEdit::textChanged,this,&MainWindow::sendedit_dispose);
 }
 
@@ -34,6 +35,19 @@ void MainWindow::Timer0_Init(uint16_t time)
 
 }
 
+void MainWindow::MesStatusBar()
+{
+    QLabel *l = new QLabel(tr("Read:"));
+    QLabel *mid = new QLabel(tr("   "));
+    QLabel *e = new QLabel(tr("Send:"));
+    label_rec = new QLabel(tr("0"));
+    label_send = new QLabel(tr("0"));
+    ui->statusBar->addWidget(l);
+    ui->statusBar->addWidget(label_rec);
+    ui->statusBar->addWidget(mid);
+    ui->statusBar->addWidget(e);
+    ui->statusBar->addWidget(label_send);
+}
 //端口检测
 void MainWindow::time0_task(void)
 {
@@ -133,6 +147,11 @@ void MainWindow::sendedit_dispose()
 }
 void MainWindow::data_dispose(QByteArray str)
 {
+    readdata_num.append(str);
+
+    QString num = QString::number(readdata_num.size());
+    label_rec->setText(num);
+
     edit_show(str,0);
 }
 void MainWindow::send_data_serial()
@@ -156,6 +175,9 @@ void MainWindow::send_data_serial()
             edit_show(senddata,1);
         }
     }
+    senddata_num.append(senddata);
+    QString num = QString::number(senddata_num.size());
+    label_send->setText(num);
 }
 void MainWindow::send_data_tcp()
 {
@@ -205,6 +227,11 @@ void MainWindow::changeportopen_en(bool flag)
 }
 void MainWindow::on_cleanrecivebtn_clicked()
 {
+    readdata_num.clear();
+
+    QString num = QString::number(readdata_num.size());
+    label_rec->setText(num);
+
     ui->receive_edit->clear();
 }
 void MainWindow::on_savebtn_clicked()
@@ -214,7 +241,7 @@ void MainWindow::on_savebtn_clicked()
     qDebug()<<path;
     QDateTime time = QDateTime::currentDateTime();
     int time_int = time.toTime_t();
-    QString filename = "/test_"+QString::number(time_int)+".txt";
+    QString filename = "/text_"+QString::number(time_int)+".txt";
 
     QFile fp;
     fp.setFileName(path+filename);
@@ -222,6 +249,15 @@ void MainWindow::on_savebtn_clicked()
     QTextStream out(&fp);
     out<<ui->receive_edit->toPlainText();
     fp.close();
+
+    QString filename_ = "/byte_"+QString::number(time_int)+".dat";
+
+    QFile fp_;
+    fp_.setFileName(path+filename_);
+    fp_.open(QIODevice::WriteOnly|QIODevice::Truncate);
+    QDataStream out_(&fp_);
+    out_<<readdata_num;
+    fp_.close();
 }
 void MainWindow::on_topweight_clicked(bool checked)
 {
@@ -296,3 +332,14 @@ void MainWindow::on_openfilebtn_clicked()
         ui->receive_edit->append(strwrite);
     }
 }
+
+void MainWindow::on_cleansendbtn_clicked()
+{
+    ui->send_edit->clear();
+    senddata_num.clear();
+
+    QString num = QString::number(senddata_num.size());
+    label_send->setText(num);
+}
+
+
