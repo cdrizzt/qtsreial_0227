@@ -137,23 +137,23 @@ void MainWindow::data_dispose(QByteArray str)
 }
 void MainWindow::send_data_serial()
 {
+    QByteArray senddata;
     if(portopen_en==true)
     {
         QString str;
         str = ui->send_edit->toPlainText();
         if(sendsta.hexsend==false)
         {
-            myserial->send_data(str.toLatin1());
+            senddata=str.toLatin1();
         }
         else
         {
-            QByteArray senddata = QString2Hex(str);
-            myserial->send_data(senddata);
+            senddata = QString2Hex(str);
         }
-
+         myserial->send_data(senddata);
         if(sendsta.sendshow==true)
         {
-            edit_show(str,1);
+            edit_show(senddata,1);
         }
     }
 }
@@ -166,9 +166,11 @@ void MainWindow::send_data_tcp()
         myserial->send_data(str.toLatin1());
     }
 }
-void MainWindow::edit_show(QString str,uint8_t flag)
+void MainWindow::edit_show(QByteArray byte_,uint8_t flag)
 {
     QString show;
+    QString str;
+    qDebug()<<byte_;
     if(receivesta.timeshow==true)
     {
         QDateTime time = QDateTime::currentDateTime();
@@ -184,36 +186,14 @@ void MainWindow::edit_show(QString str,uint8_t flag)
     }
     if(receivesta.hexshow==false)
     {
+        str = QString(byte_);
         show.append(str);
     }
     else
     {
-        QString strwrite;
-        if(sendsta.hexsend==true&&flag==1)
-        {
-            for(int i=0; i<str.length(); i+=2)
-            {
-                QString st = str.mid(i,2);
-                strwrite += "0x";
-                strwrite += st;
-                strwrite += " ";
-            }
-        }
-        else
-        {
-            QByteArray str_byte = str.toLatin1();
-            QString str = str_byte.toHex().data();
-            str = str.toUpper();
-            for(int i=0; i<str.length(); i+=2)
-            {
-                QString st = str.mid(i,2);
-                strwrite += "0x";
-                strwrite += st;
-                strwrite += " ";
-            }
-        }
-        show.append(strwrite);
-
+        QString strshow =hexToString(byte_);
+        show.append(strshow);
+        qDebug()<<strshow;
     }
     ui->receive_edit->append(show);
 }

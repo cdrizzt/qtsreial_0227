@@ -39,7 +39,7 @@ public:
     ~MainWindow();
 
     void Timer0_Init(uint16_t time);       //中断时间 对象 槽函数
-    void edit_show(QString str, uint8_t flag);
+    void edit_show(QByteArray byte_, uint8_t flag);
 
 private slots:          //槽
     void time0_task(void);
