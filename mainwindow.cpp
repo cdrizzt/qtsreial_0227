@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     myserial = NULL;
+    send_save_file = NULL;
+    myTime_1 = NULL;
     mytcp    = new myTCP(ui->portsetweight);
     memset(&sendsta,false,sizeof(sendsta));
     memset(&receivesta,false,sizeof(receivesta));
@@ -16,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->sendtimeset->setValidator(new QIntValidator(1,50000,this));
     portopen_en=false;
     Timer0_Init(1000);
+    Timerread_Init(2);
     MesStatusBar();
     connect(ui->send_edit,&QTextEdit::textChanged,this,&MainWindow::sendedit_dispose);
 }
@@ -25,6 +28,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 //初始化
+void MainWindow::Timerread_Init(uint16_t time)
+{
+    myTime_read = new QTimer();
+    myTime_read->stop();
+    myTime_read->setInterval(time);
+    connect(myTime_read,SIGNAL(timeout()),this,SLOT(timeread_task(void)));
+    myTime_read->start();
+}
 void MainWindow::Timer0_Init(uint16_t time)
 {
     myTime_0 = new QTimer();
@@ -32,9 +43,16 @@ void MainWindow::Timer0_Init(uint16_t time)
     myTime_0->setInterval(time);
     connect(myTime_0,SIGNAL(timeout()),this,SLOT(time0_task(void)));
     myTime_0->start();
+}
+void MainWindow::Timer1_Init(uint16_t time)
+{
+    myTime_1 = new QTimer();
+    myTime_1->stop();
+    myTime_1->setInterval(time);
+    connect(myTime_1,SIGNAL(timeout()),this,SLOT(time1_task(void)));
+    myTime_1->start();
 
 }
-
 void MainWindow::MesStatusBar()
 {
     QLabel *l = new QLabel(tr("Read:"));
@@ -97,6 +115,23 @@ void MainWindow::time0_task(void)
         qDebug()<<port_num;
     }
 }
+void MainWindow::time1_task(void)
+{
+    emit ui->senddatabtn->click();
+}
+void MainWindow::timeread_task(void)
+{
+    if(portopen_en==true&&read_show.size()!=0)
+    {
+        if(++read_dalay>10)
+        {
+          edit_show(read_show,0);                                   //显示
+          read_show.clear();
+          read_dalay=0;
+        }
+    }
+
+}
 //端口选择
 void MainWindow::on_portchoose_currentIndexChanged(int index)
 {
@@ -105,7 +140,9 @@ void MainWindow::on_portchoose_currentIndexChanged(int index)
         qDebug()<<index;
         delete myserial;
         delete mytcp;
-
+        disconnect(myserial,&mySerial::serial_readdata,this,&MainWindow::data_dispose);
+        disconnect(ui->senddatabtn,&QPushButton::clicked,this,&MainWindow::send_data_serial);
+        disconnect(myserial,&mySerial::serial_status,this,&MainWindow::changeportopen_en);
         if(index==0)
         {
             mytcp = new myTCP(ui->portsetweight); myserial=NULL;
@@ -147,12 +184,19 @@ void MainWindow::sendedit_dispose()
 }
 void MainWindow::data_dispose(QByteArray str)
 {
-    readdata_num.append(str);
+    readdata_num.append(str);                           //缓存数组
 
-    QString num = QString::number(readdata_num.size());
+    if(receivesta.filerecive==true)                     //写入文件
+    {
+        send_save_file->open(QIODevice::WriteOnly|QIODevice::Append);
+        QDataStream out_(send_save_file);
+        out_<<str;
+        send_save_file->close();
+    }
+    QString num = QString::number(readdata_num.size()); //状态栏数据
     label_rec->setText(num);
-
-    edit_show(str,0);
+    read_show.append(str);
+    read_dalay=0;
 }
 void MainWindow::send_data_serial()
 {
@@ -161,6 +205,11 @@ void MainWindow::send_data_serial()
     {
         QString str;
         str = ui->send_edit->toPlainText();
+        if(sendsta.entersend==true)
+        {
+            str.append('\r');
+            str.append('\n');
+        }
         if(sendsta.hexsend==false)
         {
             senddata=str.toLatin1();
@@ -174,6 +223,7 @@ void MainWindow::send_data_serial()
         {
             edit_show(senddata,1);
         }
+
     }
     senddata_num.append(senddata);
     QString num = QString::number(senddata_num.size());
@@ -283,10 +333,40 @@ void MainWindow::on_Hexsend_clicked(bool checked)
 void MainWindow::on_RevicceToFile_clicked(bool checked)
 {
     receivesta.filerecive=checked;
+    if(receivesta.filerecive==true)
+    {
+        QString path = QFileDialog::getExistingDirectory(this,"选择目录","D:\\qtpractice",\
+                                                             QFileDialog::ShowDirsOnly);
+        qDebug()<<path;
+        QDateTime time = QDateTime::currentDateTime();
+        int time_int = time.toTime_t();
+        QString filename = "/save_"+QString::number(time_int)+".DAT";
+
+        send_save_file = new QFile;
+        send_save_file->setFileName(path+filename);
+    }
+    else
+    {
+        delete send_save_file;
+        send_save_file = NULL;
+    }
 }
 void MainWindow::on_sendOntime_clicked(bool checked)
 {
     sendsta.timersend=checked;
+    if( sendsta.timersend==true)
+    {
+        QString time_ = ui->sendtimeset->text();
+        int time = time_.toInt();
+        time = time < 1 ? 1:time;
+        Timer1_Init(time);
+    }
+    else
+    {
+        myTime_1->stop();
+        delete myTime_1;
+        myTime_1 = NULL;
+    }
 }
 void MainWindow::on_timeshow_clicked(bool checked)
 {
@@ -341,5 +421,4 @@ void MainWindow::on_cleansendbtn_clicked()
     QString num = QString::number(senddata_num.size());
     label_send->setText(num);
 }
-
 

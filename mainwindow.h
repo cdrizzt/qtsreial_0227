@@ -39,11 +39,15 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void Timer0_Init(uint16_t time);       //中断时间 对象 槽函数
+    void Timer0_Init(uint16_t time);       //中断时间
+    void Timer1_Init(uint16_t time);       //中断时间
+    void Timerread_Init(uint16_t time);       //中断时间
     void edit_show(QByteArray byte_, uint8_t flag);
     void MesStatusBar();
 private slots:          //槽
     void time0_task(void);
+    void time1_task(void);
+    void timeread_task(void);
     void changeportopen_en(bool flag);
     void send_data_serial(void);
     void send_data_tcp(void);
@@ -75,10 +79,10 @@ private slots:          //槽
 
     void on_cleansendbtn_clicked();
 
-
 private:
     bool portopen_en;
-
+    int read_dalay;
+    QByteArray  read_show;
     QByteArray  senddata_num;
     QByteArray  readdata_num;
     SendStatus sendsta;
@@ -87,12 +91,14 @@ private:
     Ui::MainWindow *ui;
     mySerial *myserial;
     myTCP    *mytcp;
+    QTimer   *myTime_read;
     QTimer   *myTime_0;
-
-    QLabel *label_send;
-    QLabel *label_rec;
-    QFont *send_font;
-    QFont *receive_font;
+    QTimer   *myTime_1;
+    QFile    *send_save_file;
+    QLabel   *label_send;
+    QLabel   *label_rec;
+    QFont    *send_font;
+    QFont    *receive_font;
 
     QStringList serialport_list;     //串口端口号
 };
