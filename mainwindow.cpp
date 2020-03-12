@@ -205,6 +205,7 @@ void MainWindow::send_data_serial()
     {
         QString str;
         str = ui->send_edit->toPlainText();
+
         if(sendsta.entersend==true)
         {
             str.append('\r');
@@ -217,6 +218,24 @@ void MainWindow::send_data_serial()
         else
         {
             senddata = QString2Hex(str);
+        }
+        if(sendsta.checksend==true)
+        {
+            switch (ui->verifymode->currentIndex())
+            {
+                case 0:break;
+                case 1:
+                {
+                    uint8_t sumcheck = 0;
+                    for(int i=ui->checktopnum->value();i<senddata.size();i++)
+                    {
+                        sumcheck+=senddata[i];
+                    }
+                    senddata.append(sumcheck);
+                }break;
+                default:break;
+            }
+
         }
          myserial->send_data(senddata);
         if(sendsta.sendshow==true)

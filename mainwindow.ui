@@ -533,7 +533,7 @@ color: rgb(255, 0, 0);</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="spinBox">
+                     <widget class="QSpinBox" name="checktopnum">
                       <property name="minimumSize">
                        <size>
                         <width>28</width>
