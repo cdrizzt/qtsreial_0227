@@ -45,6 +45,10 @@ mySerial::~mySerial()
     delete ui_set;
     delete ui_cfg;
 }
+void mySerial::stopsend()
+{
+    SerialPort->clear(QSerialPort::Output);
+}
 void mySerial::on_port_setin_clicked()
 {
     if(open_flag==false)

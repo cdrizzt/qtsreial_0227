@@ -22,7 +22,7 @@ public:
     mySerial(QWidget *parent,QString com);
     ~mySerial();
     void send_data(QByteArray buf);
-
+    void stopsend();
 signals:
     serial_status(bool falg);
     serial_readdata(QByteArray str);

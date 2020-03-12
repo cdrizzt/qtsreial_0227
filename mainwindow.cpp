@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    extend = new myextend(this);
+    extend->close();
     myserial = NULL;
     send_save_file = NULL;
     myTime_1 = NULL;
@@ -123,11 +125,21 @@ void MainWindow::timeread_task(void)
 {
     if(portopen_en==true&&read_show.size()!=0)
     {
+        static int read_dalay_max =0;
+
         if(++read_dalay>10)
         {
           edit_show(read_show,0);                                   //显示
           read_show.clear();
           read_dalay=0;
+          read_dalay_max=0;
+        }
+        if(++read_dalay_max>500)//1s超时
+        {
+            edit_show(read_show,0);                                   //显示
+            read_show.clear();
+            read_dalay=0;
+            read_dalay_max=0;
         }
     }
 
@@ -441,3 +453,17 @@ void MainWindow::on_cleansendbtn_clicked()
     label_send->setText(num);
 }
 
+
+void MainWindow::on_filesendstopbtn_clicked()
+{
+    myserial->stopsend();
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    if(extend->open_flag==false)
+    {
+        extend->open_flag=true;
+        extend->show();
+    }
+}

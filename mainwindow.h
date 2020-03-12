@@ -11,6 +11,7 @@
 #include <QFont>
 #include <QLabel>
 
+#include "myextend.h"
 #include "myserial.h"
 #include "mytcp.h"
 #include "bytechange.h"
@@ -79,6 +80,10 @@ private slots:          //槽
 
     void on_cleansendbtn_clicked();
 
+    void on_filesendstopbtn_clicked();
+
+    void on_pushButton_clicked();
+
 private:
     bool portopen_en;
     int read_dalay;
@@ -89,6 +94,7 @@ private:
     ReciveStatus receivesta;
 
     Ui::MainWindow *ui;
+    myextend   *extend;
     mySerial *myserial;
     myTCP    *mytcp;
     QTimer   *myTime_read;

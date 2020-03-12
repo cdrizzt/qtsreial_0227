@@ -28,14 +28,17 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     myserial.cpp \
     mytcp.cpp \
-    bytechange.cpp
+    bytechange.cpp \
+    myextend.cpp
 
 HEADERS  += mainwindow.h \
     myserial.h \
     mytcp.h \
-    bytechange.h
+    bytechange.h \
+    myextend.h
 
 FORMS    += mainwindow.ui \
     myserial_config.ui \
     mytcp_config.ui \
-    myserial_set.ui
+    myserial_set.ui \
+    myextend.ui
