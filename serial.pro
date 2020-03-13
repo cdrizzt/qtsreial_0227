@@ -29,16 +29,19 @@ SOURCES += main.cpp\
     myserial.cpp \
     mytcp.cpp \
     bytechange.cpp \
-    myextend.cpp
+    myextend.cpp \
+    oscilloscope.cpp
 
 HEADERS  += mainwindow.h \
     myserial.h \
     mytcp.h \
     bytechange.h \
-    myextend.h
+    myextend.h \
+    oscilloscope.h
 
 FORMS    += mainwindow.ui \
     myserial_config.ui \
     mytcp_config.ui \
     myserial_set.ui \
-    myextend.ui
+    myextend.ui \
+    oscilloscope.ui

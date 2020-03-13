@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     extend = new myextend(this);
     extend->close();
+    myosc = NULL;
     myserial = NULL;
     send_save_file = NULL;
     myTime_1 = NULL;
@@ -301,6 +302,16 @@ void MainWindow::edit_show(QByteArray byte_,uint8_t flag)
     ui->receive_edit->append(show);
 }
 
+//示波器
+void MainWindow::open_osci()
+{
+    myosc = new oscilloscope();
+    myosc->show();
+}
+void MainWindow::close_osci()
+{
+    delete myosc;
+}
 //功能标志控制函数
 void MainWindow::changeportopen_en(bool flag)
 {
@@ -443,7 +454,6 @@ void MainWindow::on_openfilebtn_clicked()
         ui->receive_edit->append(strwrite);
     }
 }
-
 void MainWindow::on_cleansendbtn_clicked()
 {
     ui->send_edit->clear();
@@ -452,18 +462,24 @@ void MainWindow::on_cleansendbtn_clicked()
     QString num = QString::number(senddata_num.size());
     label_send->setText(num);
 }
-
-
 void MainWindow::on_filesendstopbtn_clicked()
 {
     myserial->stopsend();
 }
-
 void MainWindow::on_pushButton_clicked()
 {
     if(extend->open_flag==false)
     {
         extend->open_flag=true;
         extend->show();
+        connect(extend,&myextend::open_osc,this,&MainWindow::open_osci);
+        connect(extend,&myextend::close_osc,this,&MainWindow::close_osci);
+    }
+    else
+    {
+        extend->open_flag=false;
+        disconnect(extend,&myextend::open_osc,this,&MainWindow::open_osci);
+        disconnect(extend,&myextend::close_osc,this,&MainWindow::close_osci);
+        extend->close();
     }
 }

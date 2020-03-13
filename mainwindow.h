@@ -15,6 +15,7 @@
 #include "myserial.h"
 #include "mytcp.h"
 #include "bytechange.h"
+#include "oscilloscope.h"
 
 typedef struct{
     bool hexshow;
@@ -84,6 +85,8 @@ private slots:          //槽
 
     void on_pushButton_clicked();
 
+    void open_osci();
+    void close_osci();
 private:
     bool portopen_en;
     int read_dalay;
@@ -94,6 +97,7 @@ private:
     ReciveStatus receivesta;
 
     Ui::MainWindow *ui;
+    oscilloscope *myosc;
     myextend   *extend;
     mySerial *myserial;
     myTCP    *mytcp;
