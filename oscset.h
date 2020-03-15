@@ -17,6 +17,14 @@ public:
     ~oscset();
     void open();
 
+    //data
+    bool mouse_checkmode;
+
+private slots:
+    void on_renew_btn_clicked();
+
+    void on_cancle_btn_clicked();
+
 private:
     Agree agreement[6];
     Ui::oscset *ui;

@@ -15,5 +15,15 @@ oscset::~oscset()
 
 void oscset::open()
 {
-    //ui->setupUi(this);
+
+}
+
+void oscset::on_renew_btn_clicked()
+{
+
+}
+
+void oscset::on_cancle_btn_clicked()
+{
+
 }

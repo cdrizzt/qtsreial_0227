@@ -10,8 +10,8 @@ oscilloscope::oscilloscope(QWidget *parent) :
 
     set_mod = new oscset(this);
 
-    data_num=0;
-    data    = new QLineSeries();
+    data_num = 0;
+    data     = new QLineSeries();
 
     mychart = new QChart();
     mychart->legend()->hide();
@@ -25,24 +25,26 @@ oscilloscope::oscilloscope(QWidget *parent) :
     axisX = new QValueAxis();
     axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
 
-    axisX->setTitleText("t/ms");
+    //axisX->setTitleText("t/ms");
 
     show_y.origin = 0;
-    show_y.scope       = 6;
+    show_y.scope  = 6;
 
     axisY = new QValueAxis();
     axisY->setRange(show_y.origin-show_y.scope/2,
                     show_y.origin+show_y.scope/2);
 
-    axisY->setTitleText("au/mv");
+    //axisY->setTitleText("au/mv");
 
     mychart->setAxisX(axisX,data);
     mychart->setAxisY(axisY,data);
 
     QHBoxLayout *hb = new QHBoxLayout(ui->viewwidget);
-    mychartvier = new QChartView(mychart);
+    mychartvier = new myqchartview(mychart);
     hb->addWidget(mychartvier);
 
+    connect(mychartvier,&myqchartview::change_x,this,&oscilloscope::change_axis_x);
+    connect(mychartvier,&myqchartview::change_y,this,&oscilloscope::change_axis_y);
 }
 
 oscilloscope::~oscilloscope()
@@ -55,7 +57,12 @@ oscilloscope::~oscilloscope()
     delete ui;
 }
 
-void oscilloscope::add_data(int num,uint32_t data_read)
+QByteArray oscilloscope::data_dispose(QByteArray indata)//数据处理函数
+{
+
+
+}
+void oscilloscope::add_data(int num,uint32_t data_read)//数据显示函数
 {
 
     float a=0;
@@ -76,7 +83,14 @@ void oscilloscope::add_data(int num,uint32_t data_read)
         axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
     }
 }
+void oscilloscope::change_axis_x(QValueAxis *x)
+{
 
+}
+void oscilloscope::change_axis_y(QValueAxis *y)
+{
+
+}
 void oscilloscope::on_xSlider_sliderMoved(int position)
 {
     show_x.origin = (show_x.max-show_x.scope)*(float(position)/100);

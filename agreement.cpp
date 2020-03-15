@@ -12,3 +12,13 @@ Agreement::~Agreement()
 {
     delete ui;
 }
+
+void Agreement::write(Agree data)//打开写入
+{
+
+}
+
+Agree Agreement::read()          //ok读出
+{
+
+}

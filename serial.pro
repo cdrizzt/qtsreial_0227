@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     myextend.cpp \
     oscilloscope.cpp \
     oscset.cpp \
-    agreement.cpp
+    agreement.cpp \
+    myqchartview.cpp
 
 HEADERS  += mainwindow.h \
     myserial.h \
@@ -42,7 +43,8 @@ HEADERS  += mainwindow.h \
     myextend.h \
     oscilloscope.h \
     oscset.h \
-    agreement.h
+    agreement.h \
+    myqchartview.h
 
 FORMS    += mainwindow.ui \
     myserial_config.ui \
