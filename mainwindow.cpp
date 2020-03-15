@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     myserial = NULL;
     send_save_file = NULL;
     myTime_1 = NULL;
+    myTime_2 = NULL;
     mytcp    = new myTCP(ui->portsetweight);
     memset(&sendsta,false,sizeof(sendsta));
     memset(&receivesta,false,sizeof(receivesta));
@@ -54,6 +55,15 @@ void MainWindow::Timer1_Init(uint16_t time)
     myTime_1->setInterval(time);
     connect(myTime_1,SIGNAL(timeout()),this,SLOT(time1_task(void)));
     myTime_1->start();
+
+}
+void MainWindow::Timer2_Init(uint16_t time)
+{
+    myTime_2 = new QTimer();
+    myTime_2->stop();
+    myTime_2->setInterval(time);
+    connect(myTime_2,SIGNAL(timeout()),this,SLOT(time2_task(void)));
+    myTime_2->start();
 
 }
 void MainWindow::MesStatusBar()
@@ -121,6 +131,15 @@ void MainWindow::time0_task(void)
 void MainWindow::time1_task(void)
 {
     emit ui->senddatabtn->click();
+}
+void MainWindow::time2_task(void)
+{
+    static uint32_t time;
+    time++;
+    float a = sin(float(time)/10);
+    uint32_t data=0;
+    memcpy(&data,&a,sizeof(a));
+    myosc->add_data(0,data);
 }
 void MainWindow::timeread_task(void)
 {
@@ -306,10 +325,12 @@ void MainWindow::edit_show(QByteArray byte_,uint8_t flag)
 void MainWindow::open_osci()
 {
     myosc = new oscilloscope();
+    Timer2_Init(100);
     myosc->show();
 }
 void MainWindow::close_osci()
 {
+    delete myTime_2;
     delete myosc;
 }
 //功能标志控制函数

@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += serialport
+QT       += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,18 +31,24 @@ SOURCES += main.cpp\
     mytcp.cpp \
     bytechange.cpp \
     myextend.cpp \
-    oscilloscope.cpp
+    oscilloscope.cpp \
+    oscset.cpp \
+    agreement.cpp
 
 HEADERS  += mainwindow.h \
     myserial.h \
     mytcp.h \
     bytechange.h \
     myextend.h \
-    oscilloscope.h
+    oscilloscope.h \
+    oscset.h \
+    agreement.h
 
 FORMS    += mainwindow.ui \
     myserial_config.ui \
     mytcp_config.ui \
     myserial_set.ui \
     myextend.ui \
-    oscilloscope.ui
+    oscilloscope.ui \
+    oscset.ui \
+    agreement.ui

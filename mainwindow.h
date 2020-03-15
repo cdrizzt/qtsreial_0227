@@ -11,6 +11,9 @@
 #include <QFont>
 #include <QLabel>
 
+#include "stdlib.h"
+#include "string.h"
+
 #include "myextend.h"
 #include "myserial.h"
 #include "mytcp.h"
@@ -43,12 +46,14 @@ public:
 
     void Timer0_Init(uint16_t time);       //中断时间
     void Timer1_Init(uint16_t time);       //中断时间
+    void Timer2_Init(uint16_t time);       //中断时间
     void Timerread_Init(uint16_t time);       //中断时间
     void edit_show(QByteArray byte_, uint8_t flag);
     void MesStatusBar();
 private slots:          //槽
     void time0_task(void);
     void time1_task(void);
+    void time2_task(void);
     void timeread_task(void);
     void changeportopen_en(bool flag);
     void send_data_serial(void);
@@ -58,35 +63,22 @@ private slots:          //槽
     void on_cleanrecivebtn_clicked();
     void sendedit_dispose();
     void on_savebtn_clicked();
-
     void on_topweight_clicked(bool checked);
-
     void on_Hexshow_clicked(bool checked);
-
     void on_Hexsend_clicked(bool checked);
-
     void on_RevicceToFile_clicked(bool checked);
-
     void on_sendOntime_clicked(bool checked);
-
     void on_timeshow_clicked(bool checked);
-
     void on_addlineend_clicked(bool checked);
-
     void on_addverify_clicked(bool checked);
-
     void on_sendshow_clicked(bool checked);
-
     void on_openfilebtn_clicked();
-
     void on_cleansendbtn_clicked();
-
     void on_filesendstopbtn_clicked();
-
     void on_pushButton_clicked();
-
     void open_osci();
     void close_osci();
+
 private:
     bool portopen_en;
     int read_dalay;
@@ -104,6 +96,7 @@ private:
     QTimer   *myTime_read;
     QTimer   *myTime_0;
     QTimer   *myTime_1;
+    QTimer   *myTime_2;
     QFile    *send_save_file;
     QLabel   *label_send;
     QLabel   *label_rec;
