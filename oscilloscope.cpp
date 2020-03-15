@@ -18,7 +18,7 @@ oscilloscope::oscilloscope(QWidget *parent) :
 
     mychart->addSeries(data);
 
-    show_x.origin = 0;
+    show_x.origin      = 0;
     show_x.scope       = 100;
     show_x.max         = show_x.origin+show_x.scope;
 
@@ -43,8 +43,8 @@ oscilloscope::oscilloscope(QWidget *parent) :
     mychartvier = new myqchartview(mychart);
     hb->addWidget(mychartvier);
 
-    connect(mychartvier,&myqchartview::change_x,this,&oscilloscope::change_axis_x);
-    connect(mychartvier,&myqchartview::change_y,this,&oscilloscope::change_axis_y);
+    connect(mychartvier,&myqchartview::chart_move,this,&oscilloscope::chart_move);
+    connect(mychartvier,&myqchartview::zoom_moev,this,&oscilloscope::zoom_moev);
 }
 
 oscilloscope::~oscilloscope()
@@ -83,21 +83,23 @@ void oscilloscope::add_data(int num,uint32_t data_read)//数据显示函数
         axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
     }
 }
-void oscilloscope::change_axis_x(QValueAxis *x)
+void oscilloscope::chart_move(QPoint move)
+{
+    mychart->scroll(-move.x(),move.y());
+    show_x.origin=axisX->min();
+}
+void oscilloscope::zoom_moev(QPoint pos)
 {
 
-}
-void oscilloscope::change_axis_y(QValueAxis *y)
-{
-
-}
-void oscilloscope::on_xSlider_sliderMoved(int position)
-{
-    show_x.origin = (show_x.max-show_x.scope)*(float(position)/100);
-    axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
 }
 
 void oscilloscope::on_pushButton_4_clicked()
 {
     set_mod->show();
+}
+
+void oscilloscope::on_xSlider_valueChanged(int value)
+{
+    show_x.origin = (show_x.max-show_x.scope)*(float(value)/100);
+    axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
 }

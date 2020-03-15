@@ -18,11 +18,9 @@ void myqchartview::mouseMoveEvent(QMouseEvent *event)
     if(event->buttons() & Qt::RightButton)
     {
         QPoint errorPose = event->pos()-StartPos;
-        this->chart()->scroll(-errorPose.x(),errorPose.y());
         StartPos=event->pos();
-        qDebug()<<StartPos;
-        this->chart()->a
-        emit change_x();
+        emit chart_move(errorPose);
+
     }
 
 }
@@ -32,4 +30,9 @@ void myqchartview::mousePressEvent(QMouseEvent *event)
     {
         StartPos = event->pos();
     }
+}
+void myqchartview::wheelEvent(QWheelEvent *event)
+{
+    event->delta()
+    emit
 }

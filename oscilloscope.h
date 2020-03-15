@@ -29,10 +29,11 @@ public:
 
 
 private slots:
-    void change_axis_x(QValueAxis *x);
-    void change_axis_y(QValueAxis *y);
-    void on_xSlider_sliderMoved(int position);
+    void chart_move(QPoint move);
+    void zoom_moev(QPoint pos);
     void on_pushButton_4_clicked();
+
+    void on_xSlider_valueChanged(int value);
 
 private:
     oscset      *set_mod;
