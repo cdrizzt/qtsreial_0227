@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QtCharts>
 #include <QValueAxis>
+#include <QPointF>
+#include <QRectF>
 #include "oscset.h"
 #include "myqchartview.h"
 namespace Ui {
@@ -30,17 +32,17 @@ public:
 
 private slots:
     void chart_move(QPoint move);
-    void zoom_moev(QPoint pos);
+    void zoom_moev(qreal delat,QPoint pos);
     void on_pushButton_4_clicked();
 
     void on_xSlider_valueChanged(int value);
 
 private:
     oscset      *set_mod;
-    QLineSeries *data;          //示波器数据
-    uint32_t   data_num;
+    QLineSeries *data[6];            //示波器数据
+    uint32_t   data_num[6];
 
-    QChart     *mychart;        //实例
+    QChart     *mychart;          //实例
     myqchartview *mychartvier;    //画布
     QValueAxis *axisX;
     QValueAxis *axisY;

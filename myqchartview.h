@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QtCharts>
 #include <QPoint>
-#include <QPointF>
+
 using namespace QtCharts;
 
 class myqchartview: public QChartView
@@ -17,10 +17,10 @@ public:
 
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
-    virtual void myqchartview::wheelEvent(QWheelEvent *event);
+    virtual void wheelEvent(QWheelEvent *event);
 signals:
     chart_move(QPoint move);
-    zoom_moev(QPoint pos);
+    zoom_moev(qreal delat, QPoint pos);
 
 private:
     QPoint StartPos;

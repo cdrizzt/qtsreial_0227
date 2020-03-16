@@ -33,6 +33,7 @@ void myqchartview::mousePressEvent(QMouseEvent *event)
 }
 void myqchartview::wheelEvent(QWheelEvent *event)
 {
-    event->delta()
-    emit
+    qreal delta = event->angleDelta().y();
+    QPoint pos = event->pos();
+    emit zoom_moev(delta,pos);
 }

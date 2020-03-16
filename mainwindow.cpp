@@ -140,6 +140,7 @@ void MainWindow::time2_task(void)
     uint32_t data=0;
     memcpy(&data,&a,sizeof(a));
     myosc->add_data(0,data);
+    myosc->add_data(1,-data);
 }
 void MainWindow::timeread_task(void)
 {
