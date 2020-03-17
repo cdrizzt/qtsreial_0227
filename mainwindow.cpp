@@ -137,10 +137,15 @@ void MainWindow::time2_task(void)
     static uint32_t time;
     time++;
     float a = sin(float(time)/10);
+    float a1 = -a;
     uint32_t data=0;
+    uint32_t data_1=0;
+
     memcpy(&data,&a,sizeof(a));
+    memcpy(&data_1,&a1,sizeof(a1));
+
     myosc->add_data(0,data);
-    myosc->add_data(1,-data);
+    myosc->add_data(1,data_1);
 }
 void MainWindow::timeread_task(void)
 {

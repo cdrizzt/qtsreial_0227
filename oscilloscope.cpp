@@ -13,6 +13,7 @@ oscilloscope::oscilloscope(QWidget *parent) :
     for(int i=0;i<6;i++){
          data_num[i] = 0;
          data[i]     = new QLineSeries();
+         data[i]->clear();
      }
     mychart = new QChart();
     mychart->legend()->hide();
@@ -21,21 +22,20 @@ oscilloscope::oscilloscope(QWidget *parent) :
         mychart->addSeries(data[i]);
     }
 
-    axisX = new QValueAxis();
-    axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+
 
     show_y.origin = 0;
     show_y.scope  = 6;
-
     axisY = new QValueAxis();
     axisY->setRange(show_y.origin-show_y.scope/2,
                     show_y.origin+show_y.scope/2);
 
-
-
     show_x.origin      = 0;
     show_x.scope       = 100;
     show_x.max         = show_x.origin+show_x.scope;
+    axisX = new QValueAxis();
+    axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+
 
     for(int i=0;i<6;i++){
         mychart->setAxisX(axisX,data[i]);
@@ -76,13 +76,14 @@ void oscilloscope::add_data(int num,uint32_t data_read)//数据显示函数
     {
         case 0:
         {
-            data_num[0]++;
+
             data[0]->append(QPointF(data_num[0],a));
+            data_num[0]++;
         }break;
         case 1:
         {
-            data_num[1]++;
             data[1]->append(QPointF(data_num[1],a));
+            data_num[1]++;
         }break;
         default:break;
     }
@@ -94,6 +95,7 @@ void oscilloscope::add_data(int num,uint32_t data_read)//数据显示函数
             show_x.origin+=1;
             axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
             ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
+            return;
         }
 
     }
