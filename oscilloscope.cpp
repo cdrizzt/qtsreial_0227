@@ -8,21 +8,25 @@ oscilloscope::oscilloscope(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    set_mod = new oscset(this);
-
     for(int i=0;i<6;i++){
          data_num[i] = 0;
          data[i]     = new QLineSeries();
          data[i]->clear();
      }
+
     mychart = new QChart();
     mychart->legend()->hide();
+
+    ui->show1->setCheckState(Qt::Checked);
+    ui->show2->setCheckState(Qt::Checked);
+    ui->show3->setCheckState(Qt::Checked);
+    ui->show4->setCheckState(Qt::Checked);
+    ui->show5->setCheckState(Qt::Checked);
+    ui->show6->setCheckState(Qt::Checked);
 
     for(int i=0;i<6;i++){
         mychart->addSeries(data[i]);
     }
-
-
 
     show_y.origin = 0;
     show_y.scope  = 6;
@@ -36,6 +40,7 @@ oscilloscope::oscilloscope(QWidget *parent) :
     axisX = new QValueAxis();
     axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
 
+    set_mod = new oscset(this,&show_x.origin,&show_x.scope,&show_y.origin,&show_y.scope);//初始化设置
 
     for(int i=0;i<6;i++){
         mychart->setAxisX(axisX,data[i]);
@@ -132,11 +137,113 @@ void oscilloscope::zoom_moev(qreal delat, QPoint pos)
 
 void oscilloscope::on_pushButton_4_clicked()
 {
-    set_mod->show();
+    set_mod->open();
 }
 
 void oscilloscope::on_xSlider_valueChanged(int value)
 {
     show_x.origin = (show_x.max-show_x.scope)*(float(value)/100);
+    axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+}
+
+void oscilloscope::on_show1_clicked(bool checked)
+{
+    if(checked==true)
+    {
+        mychart->addSeries(data[0]);
+        mychart->setAxisX(axisX,data[0]);
+        mychart->setAxisY(axisY,data[0]);
+    }
+    else
+    {
+        mychart->removeSeries(data[0]);
+    }
+}
+
+void oscilloscope::on_show2_clicked(bool checked)
+{
+    if(checked==true)
+    {
+        mychart->addSeries(data[1]);
+        mychart->setAxisX(axisX,data[1]);
+        mychart->setAxisY(axisY,data[1]);
+    }
+    else
+    {
+        mychart->removeSeries(data[1]);
+    }
+}
+
+void oscilloscope::on_show3_clicked(bool checked)
+{
+    if(checked==true)
+    {
+        mychart->addSeries(data[2]);
+        mychart->setAxisX(axisX,data[2]);
+        mychart->setAxisY(axisY,data[2]);
+    }
+    else
+    {
+        mychart->removeSeries(data[2]);
+    }
+}
+
+void oscilloscope::on_show4_clicked(bool checked)
+{
+    if(checked==true)
+    {
+        mychart->addSeries(data[3]);
+        mychart->setAxisX(axisX,data[3]);
+        mychart->setAxisY(axisY,data[3]);
+    }
+    else
+    {
+        mychart->removeSeries(data[3]);
+    }
+}
+
+void oscilloscope::on_show5_clicked(bool checked)
+{
+    if(checked==true)
+    {
+        mychart->addSeries(data[4]);
+        mychart->setAxisX(axisX,data[4]);
+        mychart->setAxisY(axisY,data[4]);
+    }
+    else
+    {
+        mychart->removeSeries(data[4]);
+    }
+}
+
+void oscilloscope::on_show6_clicked(bool checked)
+{
+    if(checked==true)
+    {
+        mychart->addSeries(data[5]);
+        mychart->setAxisX(axisX,data[5]);
+        mychart->setAxisY(axisY,data[5]);
+    }
+    else
+    {
+        mychart->removeSeries(data[5]);
+    }
+}
+
+void oscilloscope::on_pushButton_2_clicked()
+{
+    for(int i=0;i<6;i++)
+    {
+        data[i]->clear();
+        data_num[i]=0;
+    }
+    show_y.origin = 0;
+    show_y.scope  = 6;
+    axisY->setRange(show_y.origin-show_y.scope/2,
+                    show_y.origin+show_y.scope/2);
+
+    show_x.origin      = 0;
+    show_x.scope       = 100;
+    show_x.max         = show_x.origin+show_x.scope;
     axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
 }

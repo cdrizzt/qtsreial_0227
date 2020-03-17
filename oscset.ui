@@ -29,7 +29,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -61,7 +61,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget_2">
          <property name="currentIndex">
-          <number>0</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="data_tab1">
           <attribute name="title">
@@ -84,7 +84,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="Agreement" name="widget_3" native="true"/>
+            <widget class="Agreement" name="data1" native="true"/>
            </item>
           </layout>
          </widget>
@@ -109,7 +109,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="Agreement" name="widget_4" native="true"/>
+            <widget class="Agreement" name="data2" native="true"/>
            </item>
           </layout>
          </widget>
@@ -134,7 +134,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="Agreement" name="widget_5" native="true"/>
+            <widget class="Agreement" name="data3" native="true"/>
            </item>
           </layout>
          </widget>
@@ -159,7 +159,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="Agreement" name="widget_6" native="true"/>
+            <widget class="Agreement" name="data4" native="true"/>
            </item>
           </layout>
          </widget>
@@ -184,7 +184,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="Agreement" name="widget_7" native="true"/>
+            <widget class="Agreement" name="data5" native="true"/>
            </item>
           </layout>
          </widget>
@@ -209,7 +209,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="Agreement" name="widget_8" native="true"/>
+            <widget class="Agreement" name="data6" native="true"/>
            </item>
           </layout>
          </widget>
@@ -271,6 +271,12 @@
           <property name="text">
            <string> 同时放大</string>
           </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -320,6 +326,12 @@
          <widget class="QRadioButton" name="radioButton_6">
           <property name="text">
            <string>右键移动</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -405,6 +417,19 @@
          <widget class="QLineEdit" name="lineEdit_4"/>
         </item>
        </layout>
+      </widget>
+      <widget class="QRadioButton" name="radioButton_7">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>160</y>
+         <width>111</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>坐标轴跟随数据</string>
+       </property>
       </widget>
      </widget>
     </widget>

@@ -37,6 +37,20 @@ private slots:
 
     void on_xSlider_valueChanged(int value);
 
+    void on_show1_clicked(bool checked);
+
+    void on_show2_clicked(bool checked);
+
+    void on_show3_clicked(bool checked);
+
+    void on_show4_clicked(bool checked);
+
+    void on_show5_clicked(bool checked);
+
+    void on_show6_clicked(bool checked);
+
+    void on_pushButton_2_clicked();
+
 private:
     oscset      *set_mod;
     QLineSeries *data[6];            //示波器数据
