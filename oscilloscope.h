@@ -35,7 +35,8 @@ private slots:
     void zoom_moev(qreal delat,QPoint pos);
     void on_pushButton_4_clicked();
 
-    void on_xSlider_valueChanged(int value);
+    void on_xSlider_sliderMoved(int value);
+
 
     void on_show1_clicked(bool checked);
 
@@ -50,6 +51,23 @@ private slots:
     void on_show6_clicked(bool checked);
 
     void on_pushButton_2_clicked();
+
+    void on_datashow_renew_clicked();
+
+    void renew_window();
+    void on_comboBox_1_currentIndexChanged(int index);
+
+    void on_comboBox_2_currentIndexChanged(int index);
+
+    void on_comboBox_3_currentIndexChanged(int index);
+
+    void on_comboBox_4_currentIndexChanged(int index);
+
+    void on_comboBox_5_currentIndexChanged(int index);
+
+    void on_comboBox_6_currentIndexChanged(int index);
+
+    void on_pushButton_5_clicked();
 
 private:
     oscset      *set_mod;

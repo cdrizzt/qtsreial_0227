@@ -30,11 +30,14 @@
     <widget class="QWidget" name="widget_3" native="true">
      <property name="maximumSize">
       <size>
-       <width>450</width>
+       <width>500</width>
        <height>20</height>
       </size>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>2</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -49,8 +52,21 @@
       </property>
       <item>
        <widget class="QCheckBox" name="checkBox_6">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text">
          <string>剔除示波器数据</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_5">
+        <property name="text">
+         <string>停止</string>
         </property>
        </widget>
       </item>
@@ -328,6 +344,19 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QPushButton" name="datashow_renew">
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>恢复</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QLabel" name="label">
         <property name="text">

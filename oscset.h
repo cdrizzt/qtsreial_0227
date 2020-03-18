@@ -48,7 +48,8 @@ public:
     clickmode clickset;
     asix_mode asixl;
     Agree agree[6];
-
+signals:
+    renew_window();
 
 private slots:
     void on_renew_btn_clicked();

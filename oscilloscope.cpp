@@ -54,12 +54,13 @@ oscilloscope::oscilloscope(QWidget *parent) :
 
     connect(mychartvier,&myqchartview::chart_move,this,&oscilloscope::chart_move);
     connect(mychartvier,&myqchartview::zoom_moev,this,&oscilloscope::zoom_moev);
+    connect(set_mod,&oscset::renew_window,this,&oscilloscope::renew_window);
 }
 
 oscilloscope::~oscilloscope()
 {
     for(int i=0;i<6;i++)
-        {delete data;}          //示波器数据
+        {delete data[i];}          //示波器数据
     delete mychart;            //实例
     delete mychartvier;        //画布
     delete axisX;
@@ -72,8 +73,17 @@ QByteArray oscilloscope::data_dispose(QByteArray indata)//数据处理函数
 
 
 }
+void oscilloscope::renew_window()
+{
+    axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+    ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
+
+    axisY->setRange(show_y.origin-show_y.scope/2,
+                    show_y.origin+show_y.scope/2);
+}
 void oscilloscope::add_data(int num,uint32_t data_read)//数据显示函数
 {
+
 
     float a=0;
     memcpy(&a,&data_read,sizeof(a));
@@ -92,17 +102,18 @@ void oscilloscope::add_data(int num,uint32_t data_read)//数据显示函数
         }break;
         default:break;
     }
-    for(int i=0;i<6;i++)
-    {
-        if(data_num[i]>show_x.max*0.9)
+    for(int i=0;i<6;i++){
+        if(data_num[i]>show_x.max)
         {
-            show_x.max+=1;
-            show_x.origin+=1;
-            axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
-            ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
-            return;
+            show_x.max++;
+            show_x.origin++;
         }
+    }
 
+    if(set_mod->asixl.follow==true)
+    {
+        axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+        ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
     }
 }
 void oscilloscope::chart_move(QPoint move)
@@ -140,10 +151,11 @@ void oscilloscope::on_pushButton_4_clicked()
     set_mod->open();
 }
 
-void oscilloscope::on_xSlider_valueChanged(int value)
+void oscilloscope::on_xSlider_sliderMoved(int value)
 {
     show_x.origin = (show_x.max-show_x.scope)*(float(value)/100);
     axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+
 }
 
 void oscilloscope::on_show1_clicked(bool checked)
@@ -246,4 +258,70 @@ void oscilloscope::on_pushButton_2_clicked()
     show_x.scope       = 100;
     show_x.max         = show_x.origin+show_x.scope;
     axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+}
+
+void oscilloscope::on_datashow_renew_clicked()
+{
+    show_x.scope       = 100;
+    show_x.origin = show_x.max-(show_x.scope*0.9);
+    axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+
+    ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
+
+    show_y.origin = 0;
+    show_y.scope  = 6;
+    axisY->setRange(show_y.origin-show_y.scope/2,
+                    show_y.origin+show_y.scope/2);
+}
+
+void oscilloscope::on_comboBox_1_currentIndexChanged(int index)
+{
+    set_mod->agree[0].databit=index;
+}
+
+void oscilloscope::on_comboBox_2_currentIndexChanged(int index)
+{
+    set_mod->agree[1].databit=index;
+}
+
+void oscilloscope::on_comboBox_3_currentIndexChanged(int index)
+{
+    set_mod->agree[2].databit=index;
+}
+
+void oscilloscope::on_comboBox_4_currentIndexChanged(int index)
+{
+    set_mod->agree[3].databit=index;
+}
+
+void oscilloscope::on_comboBox_5_currentIndexChanged(int index)
+{
+    set_mod->agree[4].databit=index;
+}
+
+void oscilloscope::on_comboBox_6_currentIndexChanged(int index)
+{
+    set_mod->agree[5].databit=index;
+}
+
+
+
+void oscilloscope::on_pushButton_5_clicked()
+{
+    static bool flag = false;
+    if(flag==false)
+    {
+        ui->pushButton_5->setText("启动");
+        set_mod->asixl.follow=false;
+    }
+    else
+    {
+        ui->pushButton_5->setText("停止");
+        set_mod->asixl.follow=true;
+        show_x.origin = show_x.max-(show_x.scope*0.9);
+        axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+
+        ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
+    }
+    flag=!flag;
 }

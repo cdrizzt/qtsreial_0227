@@ -16,6 +16,7 @@ oscset::oscset(QWidget *parent,qreal *x_1,qreal *x_2,qreal *y_1,qreal *y_2) :
     for(int i=0;i<6;i++)
     {
         agree[i].head_byte=2;
+        agree[i].tail_byte=2;
         agree[i].head[0]=0xAA;
         agree[i].head[1]=i;
 
@@ -99,7 +100,29 @@ void oscset::on_cancle_btn_clicked()
 
 void oscset::on_ok_btn_clicked()
 {
+    agree[0]=ui->data1->read();
+    agree[1]=ui->data2->read();
+    agree[2]=ui->data3->read();
+    agree[3]=ui->data4->read();
+    agree[4]=ui->data5->read();
+    agree[5]=ui->data6->read();
 
+    wheel=wheel_cache;
+    clickset=clickset_cache;
+    if(ui->lineEdit->text()!=NULL){
+        *asixl.x_begin=ui->lineEdit->text().toFloat();}
+    if(ui->lineEdit_2->text()!=NULL){
+        *asixl.x_scope=ui->lineEdit_2->text().toFloat();}
+
+    if(ui->lineEdit_3->text()!=NULL){
+        *asixl.y_begin=ui->lineEdit_3->text().toFloat();}
+    if(ui->lineEdit_4->text()!=NULL){
+        *asixl.y_scope=ui->lineEdit_4->text().toFloat();}
+
+    asixl.follow=asixl_cache.follow;
+
+    emit renew_window();
+    this->close();
 }
 
 void oscset::on_radioButton_2_clicked()

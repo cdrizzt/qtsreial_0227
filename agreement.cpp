@@ -7,8 +7,13 @@ Agreement::Agreement(QWidget *parent):
     ui(new Ui::Agreement)
 {
     ui->setupUi(this);
-    connect(ui->head_edit,&QLineEdit::textChanged,this,&Agreement::head_edit_dispose);
-    connect(ui->tailedit,&QLineEdit::textChanged,this,&Agreement::tail_edit_dispose);
+
+    QRegExp regExp("[a-fA-F0-9 ]{11}");
+    ui->head_edit->setValidator(new QRegExpValidator(regExp, this));
+    ui->tailedit->setValidator(new QRegExpValidator(regExp, this));
+
+//    connect(ui->head_edit,&QLineEdit::cursorPositionChanged,this,&Agreement::head_edit_dispose);
+//    connect(ui->tailedit,&QLineEdit::cursorPositionChanged,this,&Agreement::tail_edit_dispose);
 }
 
 Agreement::~Agreement()
@@ -26,8 +31,8 @@ void Agreement::write(Agree data)//打开写入
     QString head_str=hexToString(head);
 
     QByteArray tail;
-    for(int i=0;i<data.head_byte;i++){
-          head.append(data.tail[i]);
+    for(int i=0;i<data.tail_byte;i++){
+          tail.append(data.tail[i]);
     }
     QString tail_str=hexToString(tail);
 
@@ -36,34 +41,35 @@ void Agreement::write(Agree data)//打开写入
 
     ui->databit->setCurrentIndex(data.databit);
     ui->checkmode->setCurrentIndex(data.check_mode);
+
+    QRegExp regExp("[a-fA-F0-9 ]{11}");
+    ui->head_edit->setValidator(new QRegExpValidator(regExp, this));
+    ui->tailedit->setValidator(new QRegExpValidator(regExp, this));
 }
 
 Agree Agreement::read()          //ok读出
 {
+    Agree return_data;
+    QByteArray head_;
+    QByteArray tail_;
+    QString str_head=ui->head_edit->text();
+    QString str_tail=ui->tailedit->text();
+    head_=QString2Hex(str_head);
+    tail_=QString2Hex(str_tail);
 
-}
-
-
-void Agreement::head_edit_dispose()
-{
-    QTextCursor mTextCursor = ui->head_edit->textCursor();
-    if(mTextCursor.hasSelection())//清除选中
-        mTextCursor.clearSelection();
-
-    QString inputstring = ui->head_edit->toPlainText();
-    qDebug()<<inputstring;
-    char input;
-    if(mTextCursor.positionInBlock()!=0)
-        input = inputstring.at(mTextCursor.positionInBlock()-1).toLatin1();
-    qDebug()<<input;
-    if(input==' '||(input>='0'&&input<='9')||(input>='a'&&input<='f')||(input>='A'&&input<='F')){}
-    else
-    {
-        //警告
-        ui->head_edit->textCursor().deletePreviousChar();
+    return_data.head_byte=head_.size();
+    for(int i=0;i<return_data.head_byte;i++){
+        return_data.head[i]=head_.at(i);
     }
-}
-void Agreement::tail_edit_dispose()
-{
+    return_data.tail_byte=tail_.size();
+    for(int i=0;i<tail_.size();i++){
+        return_data.tail[i]=tail_.at(i);
+    }
 
+    return_data.databit=ui->databit->currentIndex();
+    return_data.check_mode=ui->checkmode->currentIndex();
+    return return_data;
 }
+
+
+
