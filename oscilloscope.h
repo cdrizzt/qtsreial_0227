@@ -12,12 +12,13 @@ namespace Ui {
 class oscilloscope;
 }
 typedef struct{
+    qreal min;
     qreal max;
     qreal scope;
     qreal origin;
 }axis_show;
 using namespace QtCharts;
-class oscilloscope : public QWidget
+class oscilloscope : public QDialog
 {
     Q_OBJECT
 

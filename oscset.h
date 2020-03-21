@@ -28,6 +28,8 @@ typedef struct{
 
 typedef struct{
     bool follow;
+    bool follow_x;
+    bool follow_y;
     qreal *x_begin;
     qreal *x_scope;
     qreal *y_begin;
@@ -75,6 +77,10 @@ private slots:
     void on_checkBox_2_clicked(bool checked);
 
     void on_radioButton_7_clicked(bool checked);
+
+    void on_follow_x_box_clicked(bool checked);
+
+    void on_follow_y_box_clicked(bool checked);
 
 private:
     wheelmode wheel_cache;

@@ -330,8 +330,8 @@ void MainWindow::edit_show(QByteArray byte_,uint8_t flag)
 //示波器
 void MainWindow::open_osci()
 {
-    myosc = new oscilloscope();
-    Timer2_Init(100);
+    myosc = new oscilloscope(this);
+    Timer2_Init(50);
     myosc->show();
 }
 void MainWindow::close_osci()

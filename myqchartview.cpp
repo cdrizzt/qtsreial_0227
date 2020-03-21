@@ -3,10 +3,12 @@
 myqchartview::myqchartview(QWidget *parent):QChartView(parent)
 {
     painter = new QPainter(this);
+    this->chart()->setAcceptHoverEvents(true);  //chart接收悬停事件
 }
 myqchartview::myqchartview(QChart *chart, QWidget *parent):QChartView(chart,parent)
 {
     painter = new QPainter(this);
+    this->chart()->setAcceptHoverEvents(true);
 }
 myqchartview::~myqchartview()
 {
@@ -37,12 +39,13 @@ void myqchartview::wheelEvent(QWheelEvent *event)
     QPoint pos = event->pos();
     emit zoom_moev(delta,pos);
 }
-void myqchartview::hoverEvent(QWheelEvent *event)
+void myqchartview::my_hoverevent(QPointF point, bool state)
 {
+//    QPen pen;
+//    QPoint a(0,0);
+//    pen.setColor(Qt::red);           // 设置画笔为黄色
+//    painter->setPen(pen);                // 设置画笔
+//    painter->drawLine(event->pos(),a);
 
-    QPen pen;
-    QPoint a(0,0);
-    pen.setColor(Qt::red);           // 设置画笔为黄色
-    painter->setPen(pen);                // 设置画笔
-    painter->drawLine(event->pos(),a);
+    qDebug()<<"hover";
 }

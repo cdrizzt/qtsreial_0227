@@ -29,7 +29,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -429,6 +429,32 @@
        </property>
        <property name="text">
         <string>坐标轴跟随数据</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="follow_x_box">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>190</y>
+         <width>91</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>X轴跟随</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="follow_y_box">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>190</y>
+         <width>71</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Y轴跟随</string>
        </property>
       </widget>
      </widget>

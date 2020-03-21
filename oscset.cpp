@@ -12,7 +12,8 @@ oscset::oscset(QWidget *parent,qreal *x_1,qreal *x_2,qreal *y_1,qreal *y_2) :
     asixl.y_begin=y_1;
     asixl.y_scope=y_2;
     asixl.follow=true;
-
+    asixl.follow_x=true;
+    asixl.follow_y=true;
     for(int i=0;i<6;i++)
     {
         agree[i].head_byte=2;
@@ -61,7 +62,11 @@ void oscset::on_renew_btn_clicked()
     *asixl_cache.y_scope=0;
 
     wheel_cache=wheel;
+
     asixl_cache.follow=asixl.follow;
+    asixl_cache.follow_x=asixl.follow_x;
+    asixl_cache.follow_y=asixl.follow_y;
+
     clickset_cache=clickset;
 
     switch(wheel_cache){
@@ -83,6 +88,10 @@ void oscset::on_renew_btn_clicked()
 
     if(asixl_cache.follow==true)
         ui->radioButton_7->setChecked(true);
+    if(asixl_cache.follow_x==true)
+        ui->follow_x_box->setChecked(true);
+    if(asixl_cache.follow_y==true)
+        ui->follow_y_box->setChecked(true);
 
     ui->data1->write(agree[0]);
     ui->data2->write(agree[1]);
@@ -120,6 +129,10 @@ void oscset::on_ok_btn_clicked()
         *asixl.y_scope=ui->lineEdit_4->text().toFloat();}
 
     asixl.follow=asixl_cache.follow;
+    asixl.follow=asixl_cache.follow;
+    asixl.follow_x=asixl_cache.follow_x;
+    asixl.follow_y=asixl_cache.follow_y;
+
 
     emit renew_window();
     this->close();
@@ -169,4 +182,25 @@ void oscset::on_checkBox_2_clicked(bool checked)
 void oscset::on_radioButton_7_clicked(bool checked)
 {
     asixl_cache.follow=checked;
+    if(asixl_cache.follow==false)
+    {
+        ui->follow_x_box->setEnabled(false);
+        ui->follow_y_box->setEnabled(false);
+    }
+    else
+    {
+        ui->follow_x_box->setEnabled(true);
+        ui->follow_y_box->setEnabled(true);
+    }
+}
+
+void oscset::on_follow_x_box_clicked(bool checked)
+{
+    asixl_cache.follow_x=checked;
+}
+
+
+void oscset::on_follow_y_box_clicked(bool checked)
+{
+     asixl_cache.follow_y=checked;
 }

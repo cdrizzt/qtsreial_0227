@@ -3,9 +3,10 @@
 #include "math.h"
 #include <QDebug>
 oscilloscope::oscilloscope(QWidget *parent) :
-    QWidget(parent),
+    QDialog(parent),
     ui(new Ui::oscilloscope)
 {
+
     ui->setupUi(this);
 
     for(int i=0;i<6;i++){
@@ -13,8 +14,9 @@ oscilloscope::oscilloscope(QWidget *parent) :
          data[i]     = new QLineSeries();
          data[i]->clear();
      }
-
+    set_mod = new oscset(this,&show_x.origin,&show_x.scope,&show_y.origin,&show_y.scope);//初始化设置
     mychart = new QChart();
+
     mychart->legend()->hide();
 
     ui->show1->setCheckState(Qt::Checked);
@@ -24,23 +26,32 @@ oscilloscope::oscilloscope(QWidget *parent) :
     ui->show5->setCheckState(Qt::Checked);
     ui->show6->setCheckState(Qt::Checked);
 
+    ui->comboBox_1->setCurrentIndex(1);
+    ui->comboBox_2->setCurrentIndex(1);
+    ui->comboBox_3->setCurrentIndex(1);
+    ui->comboBox_4->setCurrentIndex(1);
+    ui->comboBox_5->setCurrentIndex(1);
+    ui->comboBox_6->setCurrentIndex(1);
+
     for(int i=0;i<6;i++){
         mychart->addSeries(data[i]);
     }
 
-    show_y.origin = 0;
-    show_y.scope  = 6;
+    show_y.min    = -1;
+    show_y.max    = 1;
+    show_y.scope=(show_y.max-show_y.min)*1.1;
+    show_y.origin=(show_y.min+show_y.max)/2-show_y.scope/2;
+
     axisY = new QValueAxis();
-    axisY->setRange(show_y.origin-show_y.scope/2,
-                    show_y.origin+show_y.scope/2);
+    axisY->setRange(show_y.origin,show_y.origin+show_y.scope);
 
     show_x.origin      = 0;
     show_x.scope       = 100;
-    show_x.max         = show_x.origin+show_x.scope;
+    show_x.max         = 100;
     axisX = new QValueAxis();
     axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
 
-    set_mod = new oscset(this,&show_x.origin,&show_x.scope,&show_y.origin,&show_y.scope);//初始化设置
+
 
     for(int i=0;i<6;i++){
         mychart->setAxisX(axisX,data[i]);
@@ -55,6 +66,9 @@ oscilloscope::oscilloscope(QWidget *parent) :
     connect(mychartvier,&myqchartview::chart_move,this,&oscilloscope::chart_move);
     connect(mychartvier,&myqchartview::zoom_moev,this,&oscilloscope::zoom_moev);
     connect(set_mod,&oscset::renew_window,this,&oscilloscope::renew_window);
+
+    connect(data[0],&QLineSeries::hovered, mychartvier,&myqchartview::my_hoverevent);
+
 }
 
 oscilloscope::~oscilloscope()
@@ -75,16 +89,20 @@ QByteArray oscilloscope::data_dispose(QByteArray indata)//数据处理函数
 }
 void oscilloscope::renew_window()
 {
+    ui->comboBox_1->setCurrentIndex(set_mod->agree[0].databit);
+    ui->comboBox_2->setCurrentIndex(set_mod->agree[1].databit);
+    ui->comboBox_3->setCurrentIndex(set_mod->agree[2].databit);
+    ui->comboBox_4->setCurrentIndex(set_mod->agree[3].databit);
+    ui->comboBox_5->setCurrentIndex(set_mod->agree[4].databit);
+    ui->comboBox_6->setCurrentIndex(set_mod->agree[5].databit);
+
     axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
     ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
 
-    axisY->setRange(show_y.origin-show_y.scope/2,
-                    show_y.origin+show_y.scope/2);
+    axisY->setRange(show_y.origin,show_y.origin+show_y.scope);
 }
 void oscilloscope::add_data(int num,uint32_t data_read)//数据显示函数
 {
-
-
     float a=0;
     memcpy(&a,&data_read,sizeof(a));
     switch(num)
@@ -102,28 +120,50 @@ void oscilloscope::add_data(int num,uint32_t data_read)//数据显示函数
         }break;
         default:break;
     }
-    for(int i=0;i<6;i++){
-        if(data_num[i]>show_x.max)
-        {
-            show_x.max++;
-            show_x.origin++;
-        }
+    if(data_num[num]>show_x.max){
+        show_x.max++;
+    }
+    if(show_y.max<a){
+        show_y.max=a;
+    }
+    if(show_y.min>a){
+         show_y.min=a;
     }
 
     if(set_mod->asixl.follow==true)
     {
-        axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
-        ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
+        if(set_mod->asixl.follow_x==true)
+        {
+            if(data_num[num]>show_x.max-0.1*show_x.scope)
+            {
+                show_x.origin = show_x.max-0.9*show_x.scope;
+                axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+                ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
+            }
+        }
+        if(set_mod->asixl.follow_y==true)
+        {
+            show_y.scope=(show_y.max-show_y.min)*1.1;
+            show_y.origin=(show_y.min+show_y.max)/2-show_y.scope/2;
+            axisY->setRange(show_y.origin,show_y.origin+show_y.scope);
+        }
     }
 }
-void oscilloscope::chart_move(QPoint move)
+void oscilloscope::chart_move(QPoint move)                      //移动位置函数
 {
+    set_mod->asixl.follow=false;
+
     mychart->scroll(-move.x(),move.y());
+
     show_x.origin=axisX->min();
+    show_y.origin = axisY->min();
+
     ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
 }
-void oscilloscope::zoom_moev(qreal delat, QPoint pos)
+void oscilloscope::zoom_moev(qreal delat, QPoint pos)           //放大函数
 {
+    set_mod->asixl.follow=false;
+
     QRectF old_area    = mychart->plotArea();
     QPointF old_center = old_area.center();
 
@@ -140,7 +180,7 @@ void oscilloscope::zoom_moev(qreal delat, QPoint pos)
     show_x.scope = axisX->max()-show_x.origin;
 
     show_y.scope =  axisY->max()-axisY->min();
-    show_y.origin = (axisY->max()+axisY->min())/2;
+    show_y.origin = axisY->min();
 
     ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
 
@@ -249,29 +289,35 @@ void oscilloscope::on_pushButton_2_clicked()
         data[i]->clear();
         data_num[i]=0;
     }
-    show_y.origin = 0;
-    show_y.scope  = 6;
-    axisY->setRange(show_y.origin-show_y.scope/2,
-                    show_y.origin+show_y.scope/2);
+    show_y.min    = -1;
+    show_y.max    = 1;
+    show_y.scope=(show_y.max-show_y.min)*1.1;
+    show_y.origin=(show_y.min+show_y.max)/2-show_y.scope/2;
+    axisY->setRange(show_y.origin,show_y.origin+show_y.scope);
 
     show_x.origin      = 0;
     show_x.scope       = 100;
-    show_x.max         = show_x.origin+show_x.scope;
+    show_x.max         = 100;
     axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
 }
 
 void oscilloscope::on_datashow_renew_clicked()
 {
-    show_x.scope       = 100;
-    show_x.origin = show_x.max-(show_x.scope*0.9);
-    axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+    set_mod->asixl.follow=true;
 
-    ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
+    if(set_mod->asixl.follow_x==true)
+    {
+        show_x.origin = show_x.max-(show_x.scope*0.9);
+        axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
+        ui->xSlider->setValue((show_x.origin/(show_x.max-show_x.scope))*100);
+    }
 
-    show_y.origin = 0;
-    show_y.scope  = 6;
-    axisY->setRange(show_y.origin-show_y.scope/2,
-                    show_y.origin+show_y.scope/2);
+    if(set_mod->asixl.follow_y==true)
+    {
+        show_y.scope=(show_y.max-show_y.min)*1.1;
+        show_y.origin=(show_y.min+show_y.max)/2-show_y.scope/2;
+        axisY->setRange(show_y.origin,show_y.origin+show_y.scope);
+    }
 }
 
 void oscilloscope::on_comboBox_1_currentIndexChanged(int index)

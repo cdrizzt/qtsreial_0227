@@ -5,6 +5,7 @@
 #include <QtCharts>
 #include <QPoint>
 #include <QPainter>
+#include <QtGui/QMouseEvent>
 using namespace QtCharts;
 
 class myqchartview: public QChartView
@@ -15,12 +16,15 @@ public:
     myqchartview(QChart *chart, QWidget *parent = 0);
     ~myqchartview();
 
-
-
     virtual void mousePressEvent(QMouseEvent *event);   //点击
     virtual void mouseMoveEvent(QMouseEvent *event);    //移动
     virtual void wheelEvent(QWheelEvent *event);        //滚轮
-    virtual void hoverEvent(QWheelEvent *event);
+
+public slots:
+    void my_hoverevent(QPointF point, bool state);
+
+
+
 signals:
     chart_move(QPoint move);
     zoom_moev(qreal delat, QPoint pos);
