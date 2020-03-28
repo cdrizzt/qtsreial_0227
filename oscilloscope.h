@@ -8,6 +8,8 @@
 #include <QRectF>
 #include "oscset.h"
 #include "myqchartview.h"
+#include <QScatterSeries>
+
 namespace Ui {
 class oscilloscope;
 }
@@ -70,15 +72,21 @@ private slots:
 
     void on_pushButton_5_clicked();
 
+    void data_clicked(QPointF point);
+    void data_chovered(QPointF point,bool flag);
+    QPointF MouseToSeries(QPointF FromMouse, int num, int mode);
+
 private:
     oscset      *set_mod;
-    QLineSeries *data[6];            //示波器数据
-    uint32_t   data_num[6];
+    QLineSeries    *data[6];            //示波器数据
+    uint32_t    data_num[6];            //连续点size
 
-    QChart     *mychart;          //实例
-    myqchartview *mychartvier;    //画布
-    QValueAxis *axisX;
-    QValueAxis *axisY;
+    QScatterSeries  *myscatterseries[6];        //离散点存储
+    uint32_t        *myscatterseries_num[6];    //离散点size
+    QChart          *mychart;               //实例
+    myqchartview    *mychartvier;           //画布
+    QValueAxis      *axisX;
+    QValueAxis      *axisY;
 
     axis_show show_x;
     axis_show show_y;

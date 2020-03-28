@@ -2,6 +2,7 @@
 #include "ui_oscilloscope.h"
 #include "math.h"
 #include <QDebug>
+#include <QMouseEvent>
 oscilloscope::oscilloscope(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::oscilloscope)
@@ -10,10 +11,20 @@ oscilloscope::oscilloscope(QWidget *parent) :
     ui->setupUi(this);
 
     for(int i=0;i<6;i++){
+         //线
          data_num[i] = 0;
          data[i]     = new QLineSeries();
          data[i]->clear();
+        //离散点
+         myscatterseries[i] = new QScatterSeries();
+         myscatterseries[i]->setMarkerShape(QScatterSeries::MarkerShapeCircle);//圆形的点
+         myscatterseries[i]->setMarkerSize(7); //离散点大小
+         myscatterseries[i]->clear();
      }
+
+    myscatterseries[0]->setBorderColor(QColor(Qt::red));        //离散点边框颜色
+    myscatterseries[0]->setBrush(QBrush(QColor(Qt::red)));      //离散点背景色
+
     set_mod = new oscset(this,&show_x.origin,&show_x.scope,&show_y.origin,&show_y.scope);//初始化设置
     mychart = new QChart();
 
@@ -35,6 +46,7 @@ oscilloscope::oscilloscope(QWidget *parent) :
 
     for(int i=0;i<6;i++){
         mychart->addSeries(data[i]);
+        mychart->addSeries(myscatterseries[i]);
     }
 
     show_y.min    = -1;
@@ -51,41 +63,93 @@ oscilloscope::oscilloscope(QWidget *parent) :
     axisX = new QValueAxis();
     axisX->setRange(show_x.origin,show_x.origin+show_x.scope);
 
-
-
     for(int i=0;i<6;i++){
         mychart->setAxisX(axisX,data[i]);
         mychart->setAxisY(axisY,data[i]);
+        mychart->setAxisX(axisX,myscatterseries[i]);
+        mychart->setAxisY(axisY,myscatterseries[i]);
     }
 
 
     QHBoxLayout *hb = new QHBoxLayout(ui->viewwidget);
     mychartvier = new myqchartview(mychart);
     hb->addWidget(mychartvier);
+    mychart->setAcceptHoverEvents(true);
+
+
+    connect(data[0],&QLineSeries::hovered, this,&oscilloscope::data_chovered);
+    connect(data[0],&QLineSeries::clicked, this,&oscilloscope::data_clicked);
+    connect(data[0],&QLineSeries::doubleClicked, this,&oscilloscope::data_clicked);
 
     connect(mychartvier,&myqchartview::chart_move,this,&oscilloscope::chart_move);
     connect(mychartvier,&myqchartview::zoom_moev,this,&oscilloscope::zoom_moev);
     connect(set_mod,&oscset::renew_window,this,&oscilloscope::renew_window);
 
-    connect(data[0],&QLineSeries::hovered, mychartvier,&myqchartview::my_hoverevent);
-
+    mychartvier->setMouseTracking(true);
 }
 
 oscilloscope::~oscilloscope()
 {
-    for(int i=0;i<6;i++)
-        {delete data[i];}          //示波器数据
-    delete mychart;            //实例
-    delete mychartvier;        //画布
+    for(int i=0;i<6;i++){
+        delete data[i];
+        delete myscatterseries[i];} //示波器数据
+    delete mychart;                 //实例
+    delete mychartvier;             //画布
     delete axisX;
     delete axisY;
     delete ui;
 }
+void oscilloscope::data_chovered(QPointF point,bool flag)
+{
+
+    if(flag == true){       //绘图  弹出显示窗
+        qDebug()<<point;
+    }
+    else{                   //清空
+
+    }
+}
+void oscilloscope::data_clicked(QPointF point)
+{
+    QPointF real = MouseToSeries(point,0,0);
+    myscatterseries[0]->append(real);
+    qDebug()<<point<<real;
+
+}
 
 QByteArray oscilloscope::data_dispose(QByteArray indata)//数据处理函数
 {
+QByteArray a;
+return a;
 
+}
+QPointF oscilloscope::MouseToSeries(QPointF FromMouse,int num,int mode)
+{
+    if(num>5) return FromMouse;
+    if(FromMouse.x()<0)
+        FromMouse.setX(0);
 
+    for(int i =0;i<data_num[num]-2;i++){
+        if((FromMouse.x() >= data[num]->at(i).x())&&
+             (FromMouse.x() <= data[num]->at(i+1).x()))
+        {
+            qDebug()<<data[num]->at(i)<<data[num]->at(i+1)<<FromMouse;
+
+            //qreal y = (data[num]->at(i).y()+data[num]->at(i+1).y())/2;
+            qreal y = data[num]->at(i).y();
+            qreal percentage = FromMouse.x()-data[num]->at(i).x();
+            qreal variation = data[num]->at(i+1).y() - data[num]->at(i).y();
+
+            y += percentage*variation;
+            FromMouse.setY(y);
+            return FromMouse;
+        }
+    }
+
+    qreal y = data[num]->at(data_num[num]-1).y();
+    FromMouse.setY(y);
+
+    return FromMouse;
 }
 void oscilloscope::renew_window()
 {
@@ -109,7 +173,6 @@ void oscilloscope::add_data(int num,uint32_t data_read)//数据显示函数
     {
         case 0:
         {
-
             data[0]->append(QPointF(data_num[0],a));
             data_num[0]++;
         }break;
@@ -286,6 +349,7 @@ void oscilloscope::on_pushButton_2_clicked()
 {
     for(int i=0;i<6;i++)
     {
+        myscatterseries[i]->clear();
         data[i]->clear();
         data_num[i]=0;
     }

@@ -20,11 +20,6 @@ public:
     virtual void mouseMoveEvent(QMouseEvent *event);    //移动
     virtual void wheelEvent(QWheelEvent *event);        //滚轮
 
-public slots:
-    void my_hoverevent(QPointF point, bool state);
-
-
-
 signals:
     chart_move(QPoint move);
     zoom_moev(qreal delat, QPoint pos);
